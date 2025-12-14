@@ -1,0 +1,1382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHREEJEE PUBLICATION - Student Login Portal</title>
+    <link rel="stylesheet" href="styles3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="login-background">
+        <div class="background-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <div class="brand-logo">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h1>SHREEJEE PUBLICATION</h1>
+                    </div>
+                    <p class="tagline">Your Gateway to Academic Excellence</p>
+                </div>
+
+                <div class="login-form-container">
+                    <form class="login-form" id="loginForm">
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-control" 
+                                    placeholder="Enter your email"
+                                    required
+                                >
+                            </div>
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password" class="form-label">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input 
+                                    type="password" 
+                                    id="password" 
+                                    name="password" 
+                                    class="form-control" 
+                                    placeholder="Enter your password"
+                                    required
+                                >
+                                <button type="button" class="password-toggle" id="passwordToggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <span class="error-message" id="passwordError"></span>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="rememberMe" name="rememberMe">
+                                <span class="checkmark"></span>
+                                Remember me
+                            </label>
+                            <a href="#" class="forgot-password" id="forgotPassword">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn--primary btn--full-width login-btn" id="loginBtn">
+                            <span class="btn-text">Sign In</span>
+                            <div class="btn-loader hidden">
+                                <i class="fas fa-spinner fa-spin"></i>
+                            </div>
+                        </button>
+                    </form>
+
+                    <div class="divider">
+                        <span>or continue with</span>
+                    </div>
+
+                    <div class="social-login">
+                        <button class="social-btn google-btn" id="googleBtn">
+                            <i class="fab fa-google"></i>
+                            <span>Google</span>
+                        </button>
+                        <button class="social-btn github-btn" id="githubBtn">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </button>
+                        <button class="social-btn microsoft-btn" id="microsoftBtn">
+                            <i class="fab fa-microsoft"></i>
+                            <span>Microsoft</span>
+                        </button>
+                    </div>
+
+                    <div class="signup-link">
+                        <p>Don't have an account? <a href="#" id="signupLink">Sign up for free</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer class="login-footer">
+            <p>&copy; 2025 SHREEJEE PUBLICATION. All rights reserved. | <a href="#" target="_blank">Privacy Policy</a> | <a href="#" target="_blank">Terms of Service</a></p>
+        </footer>
+    </div>
+
+        <script>
+            // SHREEJEE PUBLICATION Login Page JavaScript
+
+class LoginPage {
+    constructor() {
+        this.form = document.getElementById('loginForm');
+        this.emailInput = document.getElementById('email');
+        this.passwordInput = document.getElementById('password');
+        this.passwordToggle = document.getElementById('passwordToggle');
+        this.loginBtn = document.getElementById('loginBtn');
+        this.rememberMe = document.getElementById('rememberMe');
+        
+        // Error elements
+        this.emailError = document.getElementById('emailError');
+        this.passwordError = document.getElementById('passwordError');
+        
+        // Social login buttons
+        this.googleBtn = document.getElementById('googleBtn');
+        this.githubBtn = document.getElementById('githubBtn');
+        this.microsoftBtn = document.getElementById('microsoftBtn');
+        
+        // Other elements
+        this.forgotPassword = document.getElementById('forgotPassword');
+        this.signupLink = document.getElementById('signupLink');
+        
+        this.validationRules = {
+            email: "Must be a valid email address",
+            password: "Password must be at least 8 characters"
+        };
+        
+        this.init();
+    }
+    
+    init() {
+        this.bindEvents();
+        this.addInputAnimations();
+        this.removeDefaultOutlines();
+    }
+    
+    removeDefaultOutlines() {
+        // Remove default browser outline and focus behavior that causes blue circles
+        const style = document.createElement('style');
+        style.textContent = `
+            button, input, select, textarea, a {
+                -webkit-tap-highlight-color: transparent;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                -khtml-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+            }
+            input, textarea {
+                -webkit-user-select: text;
+                -khtml-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    bindEvents() {
+        // Form submission
+        this.form.addEventListener('submit', this.handleFormSubmit.bind(this));
+        
+        // Real-time validation
+        this.emailInput.addEventListener('blur', () => this.validateEmail());
+        this.emailInput.addEventListener('input', () => this.clearError('email'));
+        this.passwordInput.addEventListener('blur', () => this.validatePassword());
+        this.passwordInput.addEventListener('input', () => this.clearError('password'));
+        
+        // Password toggle
+        this.passwordToggle.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.togglePassword();
+        });
+        
+        // Social login buttons
+        this.googleBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleSocialLogin('google');
+        });
+        this.githubBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleSocialLogin('github');
+        });
+        this.microsoftBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.handleSocialLogin('microsoft');
+        });
+        
+        // Other links
+        this.forgotPassword.addEventListener('click', this.handleForgotPassword.bind(this));
+        this.signupLink.addEventListener('click', this.handleSignupLink.bind(this));
+        
+        // Enter key handling
+        this.emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.passwordInput.focus();
+            }
+        });
+        
+        this.passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.form.dispatchEvent(new Event('submit'));
+            }
+        });
+    }
+    
+    addInputAnimations() {
+        // Add focus animations
+        const inputs = [this.emailInput, this.passwordInput];
+        
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.classList.add('focused');
+            });
+            
+            input.addEventListener('blur', () => {
+                if (!input.value) {
+                    input.parentElement.classList.remove('focused');
+                }
+            });
+        });
+    }
+    
+    validateEmail() {
+        const email = this.emailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!email) {
+            this.showError('email', 'Email address is required');
+            return false;
+        }
+        
+        if (!emailRegex.test(email)) {
+            this.showError('email', this.validationRules.email);
+            return false;
+        }
+        
+        this.showSuccess('email');
+        return true;
+    }
+    
+    validatePassword() {
+        const password = this.passwordInput.value;
+        
+        if (!password) {
+            this.showError('password', 'Password is required');
+            return false;
+        }
+        
+        if (password.length < 8) {
+            this.showError('password', this.validationRules.password);
+            return false;
+        }
+        
+        this.showSuccess('password');
+        return true;
+    }
+    
+    showError(field, message) {
+        const input = field === 'email' ? this.emailInput : this.passwordInput;
+        const errorElement = field === 'email' ? this.emailError : this.passwordError;
+        
+        input.classList.remove('success');
+        input.classList.add('error');
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        errorElement.style.opacity = '1';
+    }
+    
+    showSuccess(field) {
+        const input = field === 'email' ? this.emailInput : this.passwordInput;
+        const errorElement = field === 'email' ? this.emailError : this.passwordError;
+        
+        input.classList.remove('error');
+        input.classList.add('success');
+        errorElement.textContent = '';
+        errorElement.style.display = 'none';
+        errorElement.style.opacity = '0';
+    }
+    
+    clearError(field) {
+        const input = field === 'email' ? this.emailInput : this.passwordInput;
+        const errorElement = field === 'email' ? this.emailError : this.passwordError;
+        
+        if (input.classList.contains('error')) {
+            input.classList.remove('error');
+            errorElement.style.opacity = '0';
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 200);
+        }
+    }
+    
+    togglePassword() {
+        const type = this.passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        this.passwordInput.setAttribute('type', type);
+        
+        const icon = this.passwordToggle.querySelector('i');
+        if (type === 'text') {
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+    
+    async handleFormSubmit(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Validate all fields
+        const isEmailValid = this.validateEmail();
+        const isPasswordValid = this.validatePassword();
+        
+        if (!isEmailValid || !isPasswordValid) {
+            this.shakeForm();
+            return;
+        }
+        
+        // Show loading state
+        this.setLoadingState(true);
+        
+        try {
+            // Simulate API call
+            await this.simulateLogin();
+            
+            // Success feedback
+            this.showSuccessMessage();
+            
+            // Redirect immediately to progress page
+            setTimeout(() => {
+                window.location.href = 'progress.html';
+            }, 500);
+            
+        } catch (error) {
+            this.showError('password', 'Invalid email or password. Please try again.');
+            this.shakeForm();
+        } finally {
+            setTimeout(() => {
+                this.setLoadingState(false);
+            }, 1000);
+        }
+    }
+    
+    async simulateLogin() {
+        // Simulate API call delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Simulate success for demo (always succeed for better UX in demo)
+        return { success: true };
+    }
+    
+    setLoadingState(loading) {
+        const btnText = this.loginBtn.querySelector('.btn-text');
+        const btnLoader = this.loginBtn.querySelector('.btn-loader');
+        
+        if (loading) {
+            this.loginBtn.classList.add('loading');
+            this.loginBtn.disabled = true;
+            btnText.style.opacity = '0';
+            btnLoader.classList.remove('hidden');
+        } else {
+            this.loginBtn.classList.remove('loading');
+            this.loginBtn.disabled = false;
+            btnText.style.opacity = '1';
+            btnLoader.classList.add('hidden');
+        }
+    }
+    
+    showSuccessMessage() {
+        const originalText = this.loginBtn.querySelector('.btn-text');
+        const originalBg = this.loginBtn.style.backgroundColor;
+        
+        originalText.textContent = 'Success!';
+        this.loginBtn.style.backgroundColor = 'var(--color-success)';
+        
+        // Reset after delay
+        setTimeout(() => {
+            originalText.textContent = 'Sign In';
+            this.loginBtn.style.backgroundColor = originalBg;
+        }, 3000);
+    }
+    
+    shakeForm() {
+        this.form.style.animation = 'shake 0.6s ease-in-out';
+        setTimeout(() => {
+            this.form.style.animation = '';
+        }, 600);
+    }
+    
+    async handleSocialLogin(provider) {
+        const button = provider === 'google' ? this.googleBtn : 
+                      provider === 'github' ? this.githubBtn : this.microsoftBtn;
+        
+        // Store original content
+        const originalIcon = button.querySelector('i').className;
+        const originalText = button.querySelector('span').textContent;
+        
+        // Add loading animation
+        button.querySelector('i').className = 'fas fa-spinner fa-spin';
+        button.querySelector('span').textContent = 'Connecting...';
+        button.disabled = true;
+        button.style.opacity = '0.7';
+        
+        try {
+            // Simulate social login delay
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Show success state
+            button.querySelector('i').className = 'fas fa-check';
+            button.querySelector('span').textContent = 'Connected!';
+            button.style.backgroundColor = 'var(--color-success)';
+            button.style.color = 'white';
+            
+            setTimeout(() => {
+                alert(`${provider.charAt(0).toUpperCase() + provider.slice(1)} login successful! Redirecting...`);
+            }, 500);
+            
+        } catch (error) {
+            alert('Social login failed. Please try again.');
+        } finally {
+            // Reset button after delay
+            setTimeout(() => {
+                button.querySelector('i').className = originalIcon;
+                button.querySelector('span').textContent = originalText;
+                button.disabled = false;
+                button.style.opacity = '1';
+                button.style.backgroundColor = '';
+                button.style.color = '';
+            }, 3000);
+        }
+    }
+    
+    handleForgotPassword(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const email = this.emailInput.value.trim();
+        if (!email) {
+            alert('Please enter your email address first to reset your password.');
+            this.emailInput.focus();
+            this.emailInput.style.animation = 'pulse 0.5s ease-in-out';
+            setTimeout(() => {
+                this.emailInput.style.animation = '';
+            }, 500);
+            return;
+        }
+        
+        if (!this.validateEmail()) {
+            alert('Please enter a valid email address.');
+            this.emailInput.focus();
+            return;
+        }
+        
+        // Show success message
+        const originalText = this.forgotPassword.textContent;
+        this.forgotPassword.textContent = 'Instructions sent!';
+        this.forgotPassword.style.color = 'var(--color-success)';
+        
+        setTimeout(() => {
+            alert(`Password reset instructions have been sent to ${email}. Please check your inbox.`);
+        }, 500);
+        
+        // Reset link text
+        setTimeout(() => {
+            this.forgotPassword.textContent = originalText;
+            this.forgotPassword.style.color = '';
+        }, 3000);
+    }
+    
+    handleSignupLink(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Animate the link
+        this.signupLink.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+            this.signupLink.style.transform = 'scale(1)';
+        }, 150);
+        
+        // Redirect to signup page
+        setTimeout(() => {
+            window.location.href = 'signup.html';
+        }, 200);
+    }
+}
+
+// Inject necessary CSS animations
+const animationCSS = `
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+    20%, 40%, 60%, 80% { transform: translateX(8px); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: var(--focus-ring); }
+    50% { transform: scale(1.02); box-shadow: var(--focus-ring); }
+    100% { transform: scale(1); box-shadow: var(--focus-ring); }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.input-wrapper.focused .input-icon {
+    color: var(--color-primary) !important;
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+
+.form-control:valid:not(:placeholder-shown) {
+    border-color: var(--color-success);
+}
+
+.social-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.social-btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    transition: all 0.4s ease;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.social-btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.login-card {
+    transition: transform 0.3s ease;
+}
+
+.social-btn:disabled {
+    cursor: not-allowed;
+}
+
+.social-btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.social-btn:disabled:hover::before {
+    width: 0;
+    height: 0;
+}
+
+/* Enhanced error message styling */
+.error-message {
+    transition: all 0.3s ease;
+    transform: translateY(-5px);
+}
+
+.error-message:empty {
+    transform: translateY(0);
+}
+
+/* Button loading state improvements */
+.btn.loading {
+    pointer-events: none;
+}
+
+.btn-loader {
+    color: var(--color-btn-primary-text);
+}
+
+/* Input focus enhancements */
+.form-control:focus {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+}
+`;
+
+// Initialize the login page when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Inject animations CSS
+    const style = document.createElement('style');
+    style.textContent = animationCSS;
+    document.head.appendChild(style);
+    
+    // Initialize login page
+    new LoginPage();
+    
+    // Add entrance animations for form elements
+    setTimeout(() => {
+        const elements = document.querySelectorAll('.form-group');
+        elements.forEach((element, index) => {
+            element.style.opacity = '0';
+            element.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                element.style.animation = `fadeInUp 0.6s ease forwards`;
+            }, index * 100);
+        });
+    }, 300);
+});
+
+// Theme handling
+function initializeTheme() {
+    const savedTheme = localStorage.getItem('shree-ojas-vidhyalaya-theme');
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const theme = savedTheme || systemTheme;
+    
+    document.documentElement.setAttribute('data-color-scheme', theme);
+}
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+    if (!localStorage.getItem('shree-ojas-vidhyalaya-theme')) {
+        document.documentElement.setAttribute('data-color-scheme', e.matches ? 'dark' : 'light');
+    }
+});
+
+// Initialize theme
+initializeTheme();
+
+const express = require('express');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const { validationResult, body } = require('express-validator');
+const rateLimit = require('express-rate-limit');
+
+// Database connection (adjust based on your database choice)
+const db = require('../config/database'); // Your database connection
+
+class AuthController {
+
+    // Login rate limiting - 5 attempts per 15 minutes per IP
+    static loginLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 5, // 5 attempts
+        message: {
+            success: false,
+            message: 'Too many login attempts, please try again later.',
+            retryAfter: '15 minutes'
+        },
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
+
+    // User Registration
+    static async register(req, res) {
+        try {
+            // Input validation
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Validation failed',
+                    errors: errors.array()
+                });
+            }
+
+            const { 
+                firstName, 
+                lastName, 
+                email, 
+                password, 
+                institution, 
+                major,
+                yearOfStudy 
+            } = req.body;
+
+            // Check if user already exists
+            const existingUser = await db.query(
+                'SELECT id FROM users WHERE email = $1', 
+                [email.toLowerCase()]
+            );
+
+            if (existingUser.rows.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    message: 'User already exists with this email address'
+                });
+            }
+
+            // Hash password
+            const saltRounds = 12;
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            // Create new user
+            const newUser = await db.query(`
+                INSERT INTO users (
+                    first_name, 
+                    last_name, 
+                    email, 
+                    password_hash, 
+                    institution, 
+                    major, 
+                    year_of_study,
+                    created_at
+                ) VALUES ($1, $2, $3, $4, $5, $6, $7, NOW()) 
+                RETURNING id, first_name, last_name, email, institution, major, year_of_study, created_at
+            `, [
+                firstName.trim(),
+                lastName.trim(), 
+                email.toLowerCase().trim(),
+                hashedPassword,
+                institution || null,
+                major || null,
+                yearOfStudy || null
+            ]);
+
+            const user = newUser.rows[0];
+
+            // Create default user preferences
+            await db.query(`
+                INSERT INTO user_preferences (user_id) VALUES ($1)
+            `, [user.id]);
+
+            // Generate JWT tokens
+            const accessToken = jwt.sign(
+                { 
+                    userId: user.id, 
+                    email: user.email,
+                    firstName: user.first_name,
+                    lastName: user.last_name
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRE || '24h' }
+            );
+
+            const refreshToken = jwt.sign(
+                { userId: user.id },
+                process.env.JWT_REFRESH_SECRET,
+                { expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d' }
+            );
+
+            // Store refresh token in database
+            await db.query(`
+                UPDATE users SET refresh_token = $1 WHERE id = $2
+            `, [refreshToken, user.id]);
+
+            // Set secure HTTP-only cookie for refresh token
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+            });
+
+            res.status(201).json({
+                success: true,
+                message: 'User registered successfully! Welcome to Shree Ojas Vidhyalaya.',
+                data: {
+                    accessToken,
+                    user: {
+                        id: user.id,
+                        firstName: user.first_name,
+                        lastName: user.last_name,
+                        email: user.email,
+                        institution: user.institution,
+                        major: user.major,
+                        yearOfStudy: user.year_of_study,
+                        createdAt: user.created_at
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Registration error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error during registration'
+            });
+        }
+    }
+
+    // User Login
+    static async login(req, res) {
+        try {
+            // Input validation
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid input data',
+                    errors: errors.array()
+                });
+            }
+
+            const { email, password, rememberMe } = req.body;
+
+            // Find user by email
+            const userResult = await db.query(`
+                SELECT 
+                    id, 
+                    first_name, 
+                    last_name, 
+                    email, 
+                    password_hash, 
+                    institution, 
+                    major, 
+                    year_of_study,
+                    last_login,
+                    is_active,
+                    failed_login_attempts,
+                    locked_until
+                FROM users 
+                WHERE email = $1
+            `, [email.toLowerCase().trim()]);
+
+            if (userResult.rows.length === 0) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password'
+                });
+            }
+
+            const user = userResult.rows[0];
+
+            // Check if account is locked
+            if (user.locked_until && new Date() < new Date(user.locked_until)) {
+                const remainingTime = Math.ceil((new Date(user.locked_until) - new Date()) / (1000 * 60));
+                return res.status(423).json({
+                    success: false,
+                    message: `Account temporarily locked due to multiple failed login attempts. Try again in ${remainingTime} minutes.`
+                });
+            }
+
+            // Check if account is active
+            if (!user.is_active) {
+                return res.status(403).json({
+                    success: false,
+                    message: 'Account is deactivated. Please contact support.'
+                });
+            }
+
+            // Verify password
+            const isValidPassword = await bcrypt.compare(password, user.password_hash);
+
+            if (!isValidPassword) {
+                // Increment failed login attempts
+                const failedAttempts = (user.failed_login_attempts || 0) + 1;
+                let lockUntil = null;
+
+                // Lock account after 5 failed attempts for 30 minutes
+                if (failedAttempts >= 5) {
+                    lockUntil = new Date(Date.now() + 30 * 60 * 1000); // 30 minutes
+                }
+
+                await db.query(`
+                    UPDATE users 
+                    SET failed_login_attempts = $1, locked_until = $2
+                    WHERE id = $3
+                `, [failedAttempts, lockUntil, user.id]);
+
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email or password',
+                    attemptsRemaining: Math.max(0, 5 - failedAttempts)
+                });
+            }
+
+            // Reset failed login attempts on successful login
+            await db.query(`
+                UPDATE users 
+                SET failed_login_attempts = 0, locked_until = NULL, last_login = NOW()
+                WHERE id = $1
+            `, [user.id]);
+
+            // Generate JWT tokens
+            const tokenExpiry = rememberMe ? '30d' : '24h';
+            const accessToken = jwt.sign(
+                { 
+                    userId: user.id, 
+                    email: user.email,
+                    firstName: user.first_name,
+                    lastName: user.last_name
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: tokenExpiry }
+            );
+
+            const refreshToken = jwt.sign(
+                { userId: user.id },
+                process.env.JWT_REFRESH_SECRET,
+                { expiresIn: rememberMe ? '60d' : '7d' }
+            );
+
+            // Store refresh token in database
+            await db.query(`
+                UPDATE users SET refresh_token = $1 WHERE id = $2
+            `, [refreshToken, user.id]);
+
+            // Set secure HTTP-only cookie for refresh token
+            const cookieMaxAge = rememberMe ? 60 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'strict',
+                maxAge: cookieMaxAge
+            });
+
+            // Get user preferences
+            const preferencesResult = await db.query(`
+                SELECT * FROM user_preferences WHERE user_id = $1
+            `, [user.id]);
+
+            res.json({
+                success: true,
+                message: `Welcome back, ${user.first_name}!`,
+                data: {
+                    accessToken,
+                    user: {
+                        id: user.id,
+                        firstName: user.first_name,
+                        lastName: user.last_name,
+                        email: user.email,
+                        institution: user.institution,
+                        major: user.major,
+                        yearOfStudy: user.year_of_study,
+                        lastLogin: user.last_login,
+                        preferences: preferencesResult.rows[0] || {}
+                    }
+                }
+            });
+
+        } catch (error) {
+            console.error('Login error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Internal server error during login'
+            });
+        }
+    }
+
+    // Refresh Token
+    static async refreshToken(req, res) {
+        try {
+            const refreshToken = req.cookies.refreshToken;
+
+            if (!refreshToken) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Refresh token not provided'
+                });
+            }
+
+            // Verify refresh token
+            const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+            // Check if refresh token exists in database
+            const userResult = await db.query(`
+                SELECT id, first_name, last_name, email, refresh_token 
+                FROM users 
+                WHERE id = $1 AND refresh_token = $2 AND is_active = true
+            `, [decoded.userId, refreshToken]);
+
+            if (userResult.rows.length === 0) {
+                res.clearCookie('refreshToken');
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid refresh token'
+                });
+            }
+
+            const user = userResult.rows[0];
+
+            // Generate new access token
+            const accessToken = jwt.sign(
+                { 
+                    userId: user.id, 
+                    email: user.email,
+                    firstName: user.first_name,
+                    lastName: user.last_name
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: process.env.JWT_EXPIRE || '24h' }
+            );
+
+            res.json({
+                success: true,
+                message: 'Token refreshed successfully',
+                data: {
+                    accessToken
+                }
+            });
+
+        } catch (error) {
+            res.clearCookie('refreshToken');
+            res.status(401).json({
+                success: false,
+                message: 'Invalid refresh token'
+            });
+        }
+    }
+
+    // Logout
+    static async logout(req, res) {
+        try {
+            const refreshToken = req.cookies.refreshToken;
+
+            if (refreshToken) {
+                // Remove refresh token from database
+                await db.query(`
+                    UPDATE users SET refresh_token = NULL WHERE refresh_token = $1
+                `, [refreshToken]);
+            }
+
+            // Clear refresh token cookie
+            res.clearCookie('refreshToken');
+
+            res.json({
+                success: true,
+                message: 'Logged out successfully'
+            });
+
+        } catch (error) {
+            console.error('Logout error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error during logout'
+            });
+        }
+    }
+
+    // Forgot Password
+    static async forgotPassword(req, res) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid email format',
+                    errors: errors.array()
+                });
+            }
+
+            const { email } = req.body;
+
+            // Check if user exists
+            const userResult = await db.query(`
+                SELECT id, first_name, email FROM users WHERE email = $1 AND is_active = true
+            `, [email.toLowerCase().trim()]);
+
+            // Always return success to prevent email enumeration
+            if (userResult.rows.length === 0) {
+                return res.json({
+                    success: true,
+                    message: 'If an account with that email exists, a password reset link has been sent.'
+                });
+            }
+
+            const user = userResult.rows[0];
+
+            // Generate password reset token
+            const resetToken = jwt.sign(
+                { userId: user.id, email: user.email, purpose: 'password_reset' },
+                process.env.JWT_SECRET,
+                { expiresIn: '1h' }
+            );
+
+            // Store reset token in database with expiry
+            await db.query(`
+                UPDATE users 
+                SET password_reset_token = $1, password_reset_expires = $2 
+                WHERE id = $3
+            `, [resetToken, new Date(Date.now() + 60 * 60 * 1000), user.id]); // 1 hour
+
+            // TODO: Send email with reset link
+            // await emailService.sendPasswordResetEmail(user.email, user.first_name, resetToken);
+
+            res.json({
+                success: true,
+                message: 'If an account with that email exists, a password reset link has been sent.',
+                // Include token for testing (remove in production)
+                resetToken: process.env.NODE_ENV === 'development' ? resetToken : undefined
+            });
+
+        } catch (error) {
+            console.error('Forgot password error:', error);
+            res.status(500).json({
+                success: false,
+                message: 'Error processing password reset request'
+            });
+        }
+    }
+
+    // Reset Password
+    static async resetPassword(req, res) {
+        try {
+            const errors = validationResult(req);
+            if (!errors.isEmpty()) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Validation failed',
+                    errors: errors.array()
+                });
+            }
+
+            const { token, newPassword } = req.body;
+
+            // Verify reset token
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            if (decoded.purpose !== 'password_reset') {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid reset token'
+                });
+            }
+
+            // Check if token exists in database and hasn't expired
+            const userResult = await db.query(`
+                SELECT id, password_reset_token, password_reset_expires 
+                FROM users 
+                WHERE id = $1 AND password_reset_token = $2 AND password_reset_expires > NOW()
+            `, [decoded.userId, token]);
+
+            if (userResult.rows.length === 0) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Invalid or expired reset token'
+                });
+            }
+
+            // Hash new password
+            const saltRounds = 12;
+            const hashedPassword = await bcrypt.hash(newPassword, saltRounds);
+
+            // Update password and clear reset token
+            await db.query(`
+                UPDATE users 
+                SET 
+                    password_hash = $1, 
+                    password_reset_token = NULL, 
+                    password_reset_expires = NULL,
+                    refresh_token = NULL
+                WHERE id = $2
+            `, [hashedPassword, decoded.userId]);
+
+            res.json({
+                success: true,
+                message: 'Password reset successful. Please log in with your new password.'
+            });
+
+        } catch (error) {
+            console.error('Reset password error:', error);
+            res.status(400).json({
+                success: false,
+                message: 'Invalid or expired reset token'
+            });
+        }
+    }
+
+    // Verify Token (for protected routes)
+    static async verifyToken(req, res, next) {
+        try {
+            const token = req.header('Authorization')?.replace('Bearer ', '');
+
+            if (!token) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Access denied. No token provided.'
+                });
+            }
+
+            const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+            // Check if user still exists and is active
+            const userResult = await db.query(`
+                SELECT id, first_name, last_name, email, is_active 
+                FROM users 
+                WHERE id = $1 AND is_active = true
+            `, [decoded.userId]);
+
+            if (userResult.rows.length === 0) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid token or user not found.'
+                });
+            }
+
+            req.user = {
+                id: decoded.userId,
+                email: decoded.email,
+                firstName: decoded.firstName,
+                lastName: decoded.lastName
+            };
+
+            next();
+        } catch (error) {
+            res.status(401).json({
+                success: false,
+                message: 'Invalid token.'
+            });
+        }
+    }
+}
+
+// Input validation rules
+const validationRules = {
+    register: [
+        body('firstName')
+            .trim()
+            .isLength({ min: 2, max: 50 })
+            .matches(/^[a-zA-Z\s'-]+$/)
+            .withMessage('First name must be 2-50 characters and contain only letters, spaces, hyphens, and apostrophes'),
+
+        body('lastName')
+            .trim()
+            .isLength({ min: 2, max: 50 })
+            .matches(/^[a-zA-Z\s'-]+$/)
+            .withMessage('Last name must be 2-50 characters and contain only letters, spaces, hyphens, and apostrophes'),
+
+        body('email')
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('Please provide a valid email address'),
+
+        body('password')
+            .isLength({ min: 8 })
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+            .withMessage('Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character'),
+
+        body('institution')
+            .optional()
+            .trim()
+            .isLength({ max: 255 })
+            .withMessage('Institution name must not exceed 255 characters'),
+
+        body('major')
+            .optional()
+            .trim()
+            .isLength({ max: 255 })
+            .withMessage('Major must not exceed 255 characters'),
+
+        body('yearOfStudy')
+            .optional()
+            .isInt({ min: 1, max: 10 })
+            .withMessage('Year of study must be between 1 and 10')
+    ],
+
+    login: [
+        body('email')
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('Please provide a valid email address'),
+
+        body('password')
+            .notEmpty()
+            .withMessage('Password is required'),
+
+        body('rememberMe')
+            .optional()
+            .isBoolean()
+            .withMessage('Remember me must be a boolean value')
+    ],
+
+    forgotPassword: [
+        body('email')
+            .isEmail()
+            .normalizeEmail()
+            .withMessage('Please provide a valid email address')
+    ],
+
+    resetPassword: [
+        body('token')
+            .notEmpty()
+            .withMessage('Reset token is required'),
+
+        body('newPassword')
+            .isLength({ min: 8 })
+            .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/)
+            .withMessage('Password must be at least 8 characters long and contain at least one lowercase letter, one uppercase letter, one number, and one special character')
+    ]
+};
+
+// Router setup
+const router = express.Router();
+
+// Apply rate limiting to login endpoint
+router.use('/login', AuthController.loginLimiter);
+
+// Authentication routes
+router.post('/register', validationRules.register, AuthController.register);
+router.post('/login', validationRules.login, AuthController.login);
+router.post('/refresh-token', AuthController.refreshToken);
+router.post('/logout', AuthController.logout);
+router.post('/forgot-password', validationRules.forgotPassword, AuthController.forgotPassword);
+router.post('/reset-password', validationRules.resetPassword, AuthController.resetPassword);
+
+// Protected route example
+router.get('/me', AuthController.verifyToken, async (req, res) => {
+    try {
+        const userResult = await db.query(`
+            SELECT 
+                id, 
+                first_name, 
+                last_name, 
+                email, 
+                institution, 
+                major, 
+                year_of_study,
+                created_at,
+                last_login
+            FROM users 
+            WHERE id = $1
+        `, [req.user.id]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        const user = userResult.rows[0];
+
+        res.json({
+            success: true,
+            data: {
+                user: {
+                    id: user.id,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    email: user.email,
+                    institution: user.institution,
+                    major: user.major,
+                    yearOfStudy: user.year_of_study,
+                    createdAt: user.created_at,
+                    lastLogin: user.last_login
+                }
+            }
+        });
+    } catch (error) {
+        console.error('Get user profile error:', error);
+        res.status(500).json({
+            success: false,
+            message: 'Error fetching user profile'
+        });
+    }
+});
+
+module.exports = {
+    router,
+    AuthController,
+    validationRules
+};
+
+    </script>
+</body>
+</html>

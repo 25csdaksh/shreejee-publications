@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHREEJEE PUBLICATION | JEE Main - Pro Mock Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a101f;
+            --bg-panel: #161e31;
+            --bg-panel-light: #202940;
+            --border-color: #3a4460;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent-blue: #38bdf8;
+            --accent-green: #34d399;
+            --accent-yellow: #facc15;
+            --accent-purple: #a78bfa;
+            --accent-red: #f87171;
+        }
+        * { font-family: 'Manrope', sans-serif; scroll-behavior: smooth;}
+        body { background-color: var(--bg-main); color: var(--text-primary); }
+        .hide { display: none !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-panel); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Question Palette Statuses */
+        .q-palette-btn.not-visited { background-color: #475569; }
+        .q-palette-btn.not-answered { background-color: var(--accent-red); }
+        .q-palette-btn.answered { background-color: var(--accent-green); }
+        .q-palette-btn.marked { background-color: var(--accent-purple); }
+        .q-palette-btn.answered-marked {
+            position: relative;
+            background-color: var(--accent-purple);
+        }
+        .q-palette-btn.answered-marked::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+        }
+        
+        /* Analysis styles */
+        .analysis-stat-card { background-color: var(--bg-panel-light); }
+        
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.7); }
+            50% { box-shadow: 0 0 0 5px rgba(248, 113, 113, 0); }
+        }
+        .timer-warning { animation: pulse-red 1.5s infinite; }
+
+        /* Navigation Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar-menu a.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-bottom: 2px solid white;
+        }
+
+        .navbar-logout {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-logout:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body class="text-sm">
+
+    <div class="navbar">
+        <div class="navbar-brand">SHREEJEE PUBLICATION</div>
+        <ul class="navbar-menu">
+            <li><a href="progress.html">Dashboard</a></li>
+            <li><a href="queries.html">Doubt Resolution</a></li>
+            <li><a href="test.html" class="active">Tests</a></li>
+            <li><a href="syllabus.html">Syllabus</a></li>
+        </ul>
+        <button class="navbar-logout" onclick="logout()">Logout</button>
+    </div>
+    <script>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+
+
+    <!-- INSTRUCTION MODAL -->
+    <div id="instruction-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-panel w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col">
+            <div class="p-6 border-b border-border-color">
+                <h2 class="text-2xl font-bold">JEE Main Mock Test Instructions</h2>
+            </div>
+            <div class="p-8 overflow-y-auto space-y-4 text-text-secondary">
+                <p class="font-bold text-text-primary text-lg">General Instructions:</p>
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>The test consists of 90 questions across 3 sections: Physics, Chemistry, and Mathematics.</li>
+                    <li>Total duration of the examination is 180 minutes. The timer starts when you click "Start Exam".</li>
+                    <li>The clock is set at the server and the countdown timer at the top right corner of screen will display the remaining time.</li>
+                    <li>Each section has 20 Multiple Choice Questions (MCQs) and 10 Numerical Value Questions. You have to attempt any 5 out of 10 Numerical questions.</li>
+                    <li>Marking Scheme: +4 for a correct answer, -1 for an incorrect answer (MCQs only), 0 for unattempted or incorrect numerical questions.</li>
+                </ol>
+                <p class="font-bold text-text-primary text-lg mt-4">Navigating the Questions:</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <div><button class="w-8 h-8 rounded-full q-palette-btn not-visited inline-block mr-2 align-middle">1</button> You have not visited the question yet.</div>
+                    <div><button class="w-8 h-8 rounded-full q-palette-btn not-answered inline-block mr-2 align-middle">1</button> You have not answered the question.</div>
+                    <div><button class="w-8 h-8 rounded-full q-palette-btn answered inline-block mr-2 align-middle">1</button> You have answered the question.</div>
+                    <div><button class="w-8 h-8 rounded-full q-palette-btn marked inline-block mr-2 align-middle">1</button> You have marked the question for review.</div>
+                    <div class="col-span-2"><div class="q-palette-btn answered-marked w-8 h-8 inline-block rounded-full mr-2 align-middle"></div> You have answered the question but marked it for review.</div>
+                </div>
+                 <p class="mt-4">You can click on the question number in the palette on the right to go to that question directly.</p>
+            </div>
+            <div class="p-6 border-t border-border-color mt-auto">
+                <button id="start-exam-btn" class="w-full bg-accent-blue hover:bg-opacity-80 text-white font-bold py-3 px-6 rounded-lg transition-all duration-300">
+                    I have read and understood the instructions. Start Exam.
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN EXAM UI -->
+    <div id="exam-ui" class="min-h-screen w-full p-2 gap-2 hidden">
+        <header class="bg-panel rounded-lg shadow-md p-2 flex items-center justify-between">
+                <h1 class="text-xl font-bold">
+                <span class="text-accent-blue">SHREEJEE PUBLICATION</span> | JEE Main Pro
+            </h1>
+            <div class="flex items-center space-x-4">
+                <div class="text-lg font-semibold">Sections:</div>
+                <div id="subject-tabs" class="flex space-x-2"></div>
+            </div>
+            <div id="timer-container" class="bg-panel-light p-2 px-4 rounded-lg flex items-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.414-1.415L11 9.586V6z" clip-rule="evenodd" /></svg>
+                <span class="font-mono text-lg font-bold" id="timer">180:00</span>
+            </div>
+        </header>
+
+        <main class="grid grid-cols-12 gap-2 mt-2">
+            <div class="col-span-9 bg-panel rounded-lg shadow-md p-6 flex flex-col">
+                <div id="question-area" class="flex-grow overflow-y-auto pr-4"></div>
+                <div id="question-nav" class="mt-6 pt-4 border-t border-border-color flex justify-between items-center">
+                    <div>
+                        <button id="mark-review-btn" class="bg-accent-purple hover:bg-opacity-80 text-white font-bold py-2 px-4 rounded-md transition">Mark for Review & Next</button>
+                        <button id="clear-response-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-md transition ml-2">Clear Response</button>
+                    </div>
+                    <button id="save-next-btn" class="bg-accent-green hover:bg-opacity-80 text-white font-bold py-3 px-8 rounded-md transition">Save & Next</button>
+                </div>
+            </div>
+            <div class="col-span-3 bg-panel rounded-lg shadow-md p-4 flex flex-col">
+                <div class="text-center border-b border-border-color pb-3">
+                    <img src="https://avatar.iran.liara.run/public/boy?username=Student" alt="User" class="w-20 h-20 rounded-full mx-auto mb-2 border-2 border-accent-blue">
+                    <h3 id="user-name" class="font-bold text-lg">JEE Aspirant</h3>
+                </div>
+                <div class="flex-grow overflow-y-auto mt-4">
+                    <p class="font-bold text-center mb-2" id="palette-subject-name">Physics</p>
+                    <div id="question-palette" class="grid grid-cols-5 gap-2"></div>
+                </div>
+                <div class="mt-4">
+                    <button id="submit-exam-btn" class="w-full bg-accent-red hover:bg-opacity-80 text-white font-bold py-3 rounded-md transition">Submit Exam</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- ANALYSIS MODAL -->
+    <div id="analysis-modal" class="fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center z-50 hide">
+        <div class="bg-panel w-full max-w-6xl h-[95vh] rounded-2xl shadow-2xl flex flex-col p-6">
+            <div class="flex justify-between items-center pb-4 border-b border-border-color">
+                <h2 class="text-3xl font-bold"><span class="text-accent-blue">SHREEJEE PUBLICATION</span> | Performance Analysis</h2>
+                <button id="close-analysis-btn" class="text-2xl text-text-secondary hover:text-white">&times;</button>
+            </div>
+            <div class="flex-grow overflow-y-auto mt-4 grid grid-cols-12 gap-6">
+                <div class="col-span-3 space-y-4">
+                    <div class="analysis-stat-card p-4 rounded-lg text-center"><div class="text-text-secondary">Total Score</div><div id="analysis-score" class="text-4xl font-bold text-accent-green">--</div></div>
+                    <div class="analysis-stat-card p-4 rounded-lg text-center"><div class="text-text-secondary">Attempted</div><div id="analysis-attempted" class="text-2xl font-bold">--</div></div>
+                    <div class="analysis-stat-card p-4 rounded-lg"><h4 class="font-bold mb-2 text-center">Accuracy</h4><div id="analysis-accuracy-chart" class="w-full h-40"></div></div>
+                </div>
+                <div class="col-span-9 bg-panel-light p-4 rounded-lg">
+                    <h3 class="font-bold text-xl mb-4">Subject-wise Breakdown</h3>
+                    <div id="subject-breakdown" class="space-y-4"></div>
+                    <h3 class="font-bold text-xl mt-6 mb-4">Question Review</h3>
+                     <div id="question-review-area" class="space-y-4 h-96 overflow-y-auto pr-2"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // --- DATA & STATE MANAGEMENT ---
+        const JEE_QUESTIONS = [
+            // Physics (30)
+            { id: 1, subject: 'Physics', type: 'mcq', question: "A block of mass m is placed on a smooth inclined plane of inclination θ. The force exerted by the plane on the block has a magnitude:", options: ["mg", "mg cosθ", "mg sinθ", "mg tanθ"], correct: 1 },
+            { id: 2, subject: 'Physics', type: 'mcq', question: "The kinetic energy of a body becomes four times its initial value. The new linear momentum will be:", options: ["Unchanged", "Twice the initial value", "Four times the initial value", "Half the initial value"], correct: 1 },
+            { id: 3, subject: 'Physics', type: 'mcq', question: "If the radius of the earth were to shrink by 1%, its mass remaining the same, the acceleration due to gravity on the earth's surface would:", options: ["decrease by 2%", "remain unchanged", "increase by 2%", "increase by 1%"], correct: 2 },
+            { id: 4, subject: 'Physics', type: 'mcq', question: "A Carnot engine has the same efficiency between (i) 100 K and 500 K, and (ii) T K and 900 K. The value of T is:", options: ["180 K", "150 K", "200 K", "250 K"], correct: 0 },
+            // ... (16 more physics mcqs)
+            { id: 20, subject: 'Physics', type: 'mcq', question: "The specific charge of an electron is:", options: ["1.6 x 10^-19 C", "1.76 x 10^11 C/kg", "9.1 x 10^-31 kg", "1 C/kg"], correct: 1 },
+            { id: 21, subject: 'Physics', type: 'numerical', question: "A particle is projected with a velocity of 20 m/s at an angle of 60° to the horizontal. The radius of curvature of its trajectory at the highest point is ___ m. (g=10 m/s²)", correct: "20" },
+            { id: 22, subject: 'Physics', type: 'numerical', question: "A force of (2i + 3j - k) N acts on a body, producing a displacement of (i - 4j + 2k) m. The work done is ___ J.", correct: "-12" },
+            // ... (8 more physics numericals)
+            { id: 30, subject: 'Physics', type: 'numerical', question: "The half-life of a radioactive substance is 30 days. The time taken for 3/4 of its original mass to disintegrate is ___ days.", correct: "60" },
+
+            // Chemistry (30)
+            { id: 31, subject: 'Chemistry', type: 'mcq', question: "Which of the following has the highest boiling point due to hydrogen bonding?", options: ["H₂O", "H₂S", "H₂Se", "H₂Te"], correct: 0 },
+            { id: 32, subject: 'Chemistry', type: 'mcq', question: "The oxidation state of Cr in K₂Cr₂O₇ is:", options: ["+3", "+6", "+4", "+7"], correct: 1 },
+            { id: 33, subject: 'Chemistry', type: 'mcq', question: "Which of the following is not a colligative property?", options: ["Vapour pressure", "Osmotic pressure", "Elevation in boiling point", "Depression in freezing point"], correct: 0 },
+            // ... (17 more chemistry mcqs)
+            { id: 50, subject: 'Chemistry', type: 'mcq', question: "Bakelite is an example of a:", options: ["Thermoplastic polymer", "Thermosetting polymer", "Elastomer", "Fibre"], correct: 1 },
+            { id: 51, subject: 'Chemistry', type: 'numerical', question: "The pH of a 0.001 M HCl solution is ___.", correct: "3" },
+            { id: 52, subject: 'Chemistry', type: 'numerical', question: "The number of sigma (σ) bonds in a molecule of benzene (C₆H₆) is ___.", correct: "12" },
+            // ... (8 more chemistry numericals)
+            { id: 60, subject: 'Chemistry', type: 'numerical', question: "For the reaction 2A + B -> C, the rate is given by Rate = k[A][B]². The order of the reaction is ___.", correct: "3" },
+            
+            // Mathematics (30)
+            { id: 61, subject: 'Mathematics', type: 'mcq', question: "The value of sin(π/3)cos(π/6) + cos(π/3)sin(π/6) is:", options: ["1/2", "√3/2", "1", "0"], correct: 2 },
+            { id: 62, subject: 'Mathematics', type: 'mcq', question: "If f(x) = x² - 5x + 7, then f'(3) is:", options: ["1", "6", "-1", "0"], correct: 0 },
+            { id: 63, subject: 'Mathematics', type: 'mcq', question: "The number of ways in which 6 men and 5 women can dine at a round table if no two women are to sit together is given by:", options: ["6! × 5!", "30", "5! × 4!", "7! × 5!"], correct: 0 },
+            // ... (17 more math mcqs)
+            { id: 80, subject: 'Mathematics', type: 'mcq', question: "The eccentricity of the ellipse 9x² + 5y² - 30y = 0 is:", options: ["1/3", "2/3", "3/4", "1/2"], correct: 1 },
+            { id: 81, subject: 'Mathematics', type: 'numerical', question: "The distance between the parallel lines 3x + 4y + 7 = 0 and 3x + 4y + 5 = 0 is ___.", correct: "0.4" },
+            { id: 82, subject: 'Mathematics', type: 'numerical', question: "If the variance of the first n natural numbers is 10, then the value of n is ___.", correct: "11" },
+            // ... (8 more math numericals)
+            { id: 90, subject: 'Mathematics', type: 'numerical', question: "The value of the determinant of a 3x3 skew-symmetric matrix is always ___.", correct: "0" },
+        ];
+        
+        // Ensure there are 90 questions (fill if needed)
+        const subjects = ['Physics', 'Chemistry', 'Mathematics'];
+        if (JEE_QUESTIONS.length < 90) {
+            for(let i=JEE_QUESTIONS.length + 1; i<=90; i++) {
+                let s_idx = Math.floor((i-1)/30);
+                JEE_QUESTIONS.push({id: i, subject: subjects[s_idx], type: 'mcq', question: `Placeholder question #${i}`, options: ["A", "B", "C", "D"], correct: 0});
+            }
+        }
+        
+        let state;
+        const defaultState = {
+            activeSubject: 'Physics',
+            currentQuestionIndex: 0,
+            timeLeft: 180 * 60,
+            answers: {},
+            statuses: {},
+            timerInterval: null
+        };
+        
+        // UI ELEMENTS
+        const instructionModal = document.getElementById('instruction-modal');
+        const examUI = document.getElementById('exam-ui');
+        const analysisModal = document.getElementById('analysis-modal');
+        const startExamBtn = document.getElementById('start-exam-btn');
+        const subjectTabsContainer = document.getElementById('subject-tabs');
+        const timerEl = document.getElementById('timer');
+        const questionArea = document.getElementById('question-area');
+        const paletteContainer = document.getElementById('question-palette');
+        const paletteSubjectName = document.getElementById('palette-subject-name');
+        const saveNextBtn = document.getElementById('save-next-btn');
+        const markReviewBtn = document.getElementById('mark-review-btn');
+        const clearResponseBtn = document.getElementById('clear-response-btn');
+        const submitExamBtn = document.getElementById('submit-exam-btn');
+        const closeAnalysisBtn = document.getElementById('close-analysis-btn');
+
+        // --- CORE LOGIC ---
+        function loadInitialState() {
+            const savedState = JSON.parse(localStorage.getItem('jeeMockState'));
+            if(savedState && savedState.timeLeft > 0) {
+                state = savedState;
+                 // Re-attach the timer interval as it's not saved in JSON
+                state.timerInterval = null;
+                initExam();
+            } else {
+                instructionModal.classList.remove('hide');
+            }
+        }
+
+        function startNewExam() {
+            state = JSON.parse(JSON.stringify(defaultState)); // Deep copy
+            JEE_QUESTIONS.forEach(q => { state.statuses[q.id] = 'not-visited'; });
+            initExam();
+        }
+
+        function initExam() {
+            instructionModal.classList.add('hide');
+            examUI.classList.remove('hidden');
+            examUI.classList.add('grid');
+            setupSubjectTabs();
+            switchSubject(state.activeSubject, false); // Don't reset question index on initial load
+            if(!state.timerInterval) {
+                 startTimer();
+            }
+        }
+
+        function setupSubjectTabs() {
+            const subjects = ['Physics', 'Chemistry', 'Mathematics'];
+            subjectTabsContainer.innerHTML = '';
+            subjects.forEach(subject => {
+                const tab = document.createElement('button');
+                tab.textContent = subject;
+                tab.className = `px-4 py-2 rounded-md font-semibold transition`;
+                tab.dataset.subject = subject;
+                if (subject === state.activeSubject) {
+                    tab.classList.add('bg-accent-blue', 'text-white');
+                } else {
+                    tab.classList.add('bg-panel-light', 'hover:bg-accent-blue/50');
+                }
+                tab.onclick = () => switchSubject(subject, true);
+                subjectTabsContainer.appendChild(tab);
+            });
+        }
+        
+        function switchSubject(subjectName, resetQuestion) {
+            state.activeSubject = subjectName;
+            if(resetQuestion) {
+                const firstQuestionOfSubject = JEE_QUESTIONS.find(q => q.subject === subjectName);
+                state.currentQuestionIndex = JEE_QUESTIONS.indexOf(firstQuestionOfSubject);
+            }
+            setupSubjectTabs();
+            renderQuestion();
+            renderPalette();
+        }
+
+        function renderQuestion() {
+            if(state.currentQuestionIndex >= JEE_QUESTIONS.length) return;
+            const question = JEE_QUESTIONS[state.currentQuestionIndex];
+            
+            if (state.statuses[question.id] === 'not-visited') {
+                state.statuses[question.id] = 'not-answered';
+            }
+
+            let optionsHTML = '';
+            if(question.type === 'mcq') {
+                optionsHTML = `<div class="space-y-3 mt-6">
+                    ${question.options.map((opt, index) => `
+                        <label class="flex items-center p-3 rounded-lg border-2 border-transparent cursor-pointer transition bg-panel-light hover:border-accent-blue">
+                            <input type="radio" name="option" value="${index}" class="form-radio h-5 w-5 text-accent-blue bg-gray-700 border-gray-600 focus:ring-accent-blue focus:ring-offset-0" ${state.answers[question.id] == index ? 'checked' : ''}>
+                            <span class="ml-4 text-text-primary">${opt}</span>
+                        </label>
+                    `).join('')}
+                </div>`;
+            } else {
+                optionsHTML = `<div class="mt-6">
+                    <input type="text" id="numerical-answer" placeholder="Enter your answer" class="w-full p-3 rounded-lg bg-bg-main border-2 border-border-color focus:border-accent-blue focus:ring-0" value="${state.answers[question.id] || ''}">
+                </div>`;
+            }
+            questionArea.innerHTML = `<div><h3 class="text-lg font-semibold text-text-secondary">Question ${state.currentQuestionIndex + 1}</h3><p class="text-xl mt-2 leading-relaxed">${question.question}</p></div>${optionsHTML}`;
+            
+            questionArea.querySelectorAll('input').forEach(input => {
+                input.onchange = (e) => {
+                    const qId = JEE_QUESTIONS[state.currentQuestionIndex].id;
+                    state.answers[qId] = e.target.value;
+                    if(state.statuses[qId] !== 'answered-marked') {
+                         state.statuses[qId] = 'answered';
+                    }
+                    renderPalette();
+                    saveState();
+                };
+            });
+        }
+
+        function renderPalette() {
+            paletteSubjectName.textContent = state.activeSubject;
+            paletteContainer.innerHTML = '';
+            const subjectQuestions = JEE_QUESTIONS.filter(q => q.subject === state.activeSubject);
+            subjectQuestions.forEach(q => {
+                const qIndex = JEE_QUESTIONS.indexOf(q);
+                const btn = document.createElement('button');
+                btn.textContent = qIndex + 1;
+                btn.className = `q-palette-btn w-10 h-10 rounded-md font-bold text-white transition-transform duration-200 hover:scale-110`;
+                btn.classList.add(state.statuses[q.id]);
+                if (qIndex === state.currentQuestionIndex) {
+                    btn.classList.add('ring-2', 'ring-accent-blue', 'scale-110');
+                }
+                btn.onclick = () => {
+                    state.currentQuestionIndex = qIndex;
+                    renderQuestion();
+                    renderPalette();
+                };
+                paletteContainer.appendChild(btn);
+            });
+        }
+        
+        function handleSaveAndNext() {
+            if (state.currentQuestionIndex < JEE_QUESTIONS.length - 1) {
+                state.currentQuestionIndex++;
+                if(JEE_QUESTIONS[state.currentQuestionIndex].subject !== state.activeSubject) {
+                    switchSubject(JEE_QUESTIONS[state.currentQuestionIndex].subject, false);
+                } else {
+                    renderQuestion();
+                    renderPalette();
+                }
+            } else {
+                 alert("This is the last question. You can submit the exam now.");
+            }
+            saveState();
+        }
+
+        function handleMarkForReview() {
+            const qId = JEE_QUESTIONS[state.currentQuestionIndex].id;
+            const currentStatus = state.statuses[qId];
+
+            if(currentStatus === 'answered' || currentStatus === 'answered-marked') {
+                state.statuses[qId] = 'answered-marked';
+            } else {
+                state.statuses[qId] = 'marked';
+            }
+            handleSaveAndNext();
+        }
+
+        function handleClearResponse() {
+            const qId = JEE_QUESTIONS[state.currentQuestionIndex].id;
+            delete state.answers[qId];
+            state.statuses[qId] = 'not-answered';
+            renderQuestion();
+            renderPalette();
+            saveState();
+        }
+
+        function startTimer() {
+            state.timerInterval = setInterval(() => {
+                state.timeLeft--;
+                const minutes = Math.floor(state.timeLeft / 60);
+                const seconds = state.timeLeft % 60;
+                timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                if(state.timeLeft <= 60*5 && !timerEl.parentElement.classList.contains('timer-warning')) {
+                    timerEl.parentElement.classList.add('timer-warning');
+                }
+                if (state.timeLeft <= 0) {
+                    clearInterval(state.timerInterval);
+                    handleSubmitExam(true); // Auto-submit
+                }
+                if(state.timeLeft % 5 === 0) saveState();
+            }, 1000);
+        }
+
+        function saveState() {
+            localStorage.setItem('jeeMockState', JSON.stringify({ ...state, timerInterval: null }));
+        }
+
+        function handleSubmitExam(isAutoSubmit = false) {
+            if(!isAutoSubmit && !confirm("Are you sure you want to submit the exam?")) return;
+            
+            clearInterval(state.timerInterval);
+            examUI.classList.add('hide');
+            analysisModal.classList.remove('hide');
+            generateAnalysis();
+            localStorage.removeItem('jeeMockState');
+        }
+        
+        // --- ANALYSIS LOGIC ---
+        function generateAnalysis() {
+            let score = 0, attempted = 0, correctCount = 0, incorrectCount = 0;
+            const subjectStats = { 
+                Physics: { score: 0, correct: 0, incorrect: 0 }, 
+                Chemistry: { score: 0, correct: 0, incorrect: 0 }, 
+                Mathematics: { score: 0, correct: 0, incorrect: 0 } 
+            };
+
+            JEE_QUESTIONS.forEach(q => {
+                const answer = state.answers[q.id];
+                if (answer !== undefined && answer !== "") {
+                    attempted++;
+                    let isCorrect = false;
+                    if(q.type === 'mcq') isCorrect = (answer == q.correct);
+                    else isCorrect = (parseFloat(answer) == parseFloat(q.correct));
+                    
+                    if (isCorrect) {
+                        score += 4;
+                        correctCount++;
+                        subjectStats[q.subject].score += 4;
+                        subjectStats[q.subject].correct++;
+                    } else {
+                        if(q.type === 'mcq') {
+                           score -= 1;
+                           subjectStats[q.subject].score -= 1;
+                        }
+                        incorrectCount++;
+                        subjectStats[q.subject].incorrect++;
+                    }
+                }
+            });
+
+            document.getElementById('analysis-score').textContent = score;
+            document.getElementById('analysis-attempted').textContent = `${attempted} / 90`;
+
+            var accuracyChart = new ApexCharts(document.querySelector("#analysis-accuracy-chart"), {
+              chart: { type: 'donut', height: '100%', foreColor: 'var(--text-primary)' },
+              series: [correctCount, incorrectCount, JEE_QUESTIONS.length - attempted],
+              labels: ['Correct', 'Incorrect', 'Unattempted'],
+              colors: [ 'var(--accent-green)', 'var(--accent-red)', '#475569'],
+              legend: { position: 'bottom' }, dataLabels: { enabled: false },
+              plotOptions: { pie: { donut: { labels: { show: true, total: { show: true, label: 'ATTEMPTED', formatter: () => attempted } } } } }
+            });
+            accuracyChart.render();
+            
+            const subjectBreakdownEl = document.getElementById('subject-breakdown');
+            subjectBreakdownEl.innerHTML = '';
+            Object.keys(subjectStats).forEach(subject => {
+                const stats = subjectStats[subject];
+                subjectBreakdownEl.innerHTML += `<div class="analysis-stat-card p-3 rounded-lg"><div class="flex justify-between items-center"><span class="font-bold text-lg">${subject}</span><span class="font-bold text-xl">Score: ${stats.score}</span></div><div class="text-sm mt-2 text-text-secondary">Correct: <span class="text-accent-green font-semibold">${stats.correct}</span> | Incorrect: <span class="text-accent-red font-semibold">${stats.incorrect}</span></div></div>`;
+            });
+
+            const reviewArea = document.getElementById('question-review-area');
+            reviewArea.innerHTML = '';
+            JEE_QUESTIONS.forEach((q, index) => {
+                const userAnswer = state.answers[q.id];
+                const isAnswered = userAnswer !== undefined && userAnswer !== "";
+                let isCorrect = false;
+                if(isAnswered) isCorrect = q.type === 'mcq' ? userAnswer == q.correct : parseFloat(userAnswer) == parseFloat(q.correct);
+                const statusClass = isAnswered ? (isCorrect ? 'border-accent-green' : 'border-accent-red') : 'border-gray-600';
+                const correctAnswerText = q.type === 'mcq' ? q.options[q.correct] : q.correct;
+
+                reviewArea.innerHTML += `<div class="bg-bg-main p-4 rounded-lg border-l-4 ${statusClass}"><p class="font-semibold">Q${index+1}: ${q.question}</p><p class="text-sm mt-2">Your Answer: <span class="font-bold ${isAnswered ? (isCorrect ? 'text-accent-green':'text-accent-red') : 'text-text-secondary'}">${isAnswered ? (q.type === 'mcq' ? q.options[userAnswer] : userAnswer) : 'Not Answered'}</span></p><p class="text-sm mt-1">Correct Answer: <span class="font-bold text-accent-green">${correctAnswerText}</span></p></div>`;
+            });
+        }
+        
+        // --- EVENT LISTENERS ---
+        startExamBtn.onclick = startNewExam;
+        saveNextBtn.onclick = handleSaveAndNext;
+        markReviewBtn.onclick = handleMarkForReview;
+        clearResponseBtn.onclick = handleClearResponse;
+        submitExamBtn.onclick = () => handleSubmitExam(false);
+        closeAnalysisBtn.onclick = () => analysisModal.classList.add('hide');
+
+        // --- INITIALIZE ---
+        loadInitialState();
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2041 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHREEJEE PUBLICATION - Complete JEE Main Teacher Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --physics-color: #ef4444;
+            --chemistry-color: #10b981;
+            --mathematics-color: #8b5cf6;
+            --background: #f8fafc;
+            --surface: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-blue);
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-blue);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .profile-role {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .profile-avatar i {
+            font-size: 2rem;
+            color: var(--primary-blue);
+        }
+
+        /* Dashboard Layout */
+        .dashboard-layout {
+            display: flex;
+            margin-top: 80px;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2rem 0;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0 1rem;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .sidebar-link i {
+            width: 1.25rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* Dashboard Overview */
+        .dashboard-header {
+            margin-bottom: 2rem;
+        }
+
+        .dashboard-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .dashboard-subtitle {
+            color: var(--text-secondary);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Upload Section */
+        .upload-container {
+            background: var(--surface);
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .upload-header {
+            margin-bottom: 2rem;
+        }
+
+        .upload-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-select,
+        .form-input {
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-select:focus,
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 1rem;
+            padding: 3rem;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover,
+        .file-upload-area.dragover {
+            border-color: var(--primary-blue);
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-hint {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Demo Materials */
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .demo-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .material-card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            transition: all 0.2s;
+            border: 1px solid var(--border);
+        }
+
+        .material-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .material-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .material-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .material-author {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .difficulty-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .difficulty-beginner {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .difficulty-intermediate {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .difficulty-advanced {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+
+        .material-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .material-stats {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stars {
+            color: #fbbf24;
+        }
+
+        .material-description {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .material-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .btn--primary {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn--primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn--secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn--secondary:hover {
+            background: var(--background);
+        }
+
+        .btn--success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn--success:hover {
+            background: #059669;
+        }
+
+        .btn--sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.75rem;
+        }
+
+        /* Subject Cards */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .subject-card {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .subject-card:hover {
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        .subject-card.physics {
+            border-top: 4px solid var(--physics-color);
+        }
+
+        .subject-card.chemistry {
+            border-top: 4px solid var(--chemistry-color);
+        }
+
+        .subject-card.mathematics {
+            border-top: 4px solid var(--mathematics-color);
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .subject-card.physics .subject-icon {
+            color: var(--physics-color);
+        }
+
+        .subject-card.chemistry .subject-icon {
+            color: var(--chemistry-color);
+        }
+
+        .subject-card.mathematics .subject-icon {
+            color: var(--mathematics-color);
+        }
+
+        .subject-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .subject-stats {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        /* Progress Bars */
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background: var(--border);
+            border-radius: 0.25rem;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary-blue);
+            transition: width 0.3s ease;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface);
+            border-radius: 1rem;
+            padding: 2rem;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            background: var(--surface);
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            box-shadow: var(--shadow-lg);
+            border-left: 4px solid var(--success);
+            z-index: 1500;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.error {
+            border-left-color: var(--error);
+        }
+
+        .notification.warning {
+            border-left-color: var(--warning);
+        }
+
+        /* Featured Materials */
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, var(--primary-blue), #1d4ed8);
+            color: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            text-align: center;
+        }
+
+        .featured-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-description {
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+
+        .featured-stats {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .sidebar-nav {
+                flex-direction: row;
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+
+            .sidebar-link {
+                white-space: nowrap;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .demo-filters {
+                flex-direction: column;
+            }
+        }
+
+        /* Loading States */
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Search */
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* Navigation Navbar */
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 10px;
+        }
+
+        .navbar-brand {
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+            text-decoration: none;
+        }
+
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-menu a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .navbar-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .navbar-menu a.active {
+            background: rgba(255, 255, 255, 0.3);
+            border-bottom: 2px solid white;
+        }
+
+        .navbar-logout {
+            background: white;
+            color: #667eea;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .navbar-logout:hover {
+            background: #f0f0f0;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="navbar-brand">SHREEJEE PUBLICATION</div>
+        <ul class="navbar-menu">
+            <li><a href="progress.html">Dashboard</a></li>
+            <li><a href="queries.html">Doubt Resolution</a></li>
+            <li><a href="test.html">Tests</a></li>
+            <li><a href="syllabus.html" class="active">Syllabus</a></li>
+        </ul>
+        <button class="navbar-logout" onclick="logout()">Logout</button>
+    </div>
+    <script>
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>SHREEJEE PUBLICATION</span>
+            </div>
+            <nav class="header-nav">
+                <a href="#" class="nav-link">Dashboard</a>
+                <a href="#" class="nav-link">Analytics</a>
+                <a href="#" class="nav-link">Support</a>
+            </nav>
+            <div class="user-profile">
+                <div class="profile-info">
+                    <span class="profile-name">Prof. Sharma</span>
+                    <span class="profile-role">Senior Teacher</span>
+                </div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+                <button class="btn btn--secondary btn--sm" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="sidebar-link active" data-section="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#upload" class="sidebar-link" data-section="upload">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Upload Materials</span>
+                </a>
+                <a href="#manage" class="sidebar-link" data-section="manage">
+                    <i class="fas fa-folder-open"></i>
+                    <span>Manage Materials</span>
+                </a>
+                <a href="#demo" class="sidebar-link" data-section="demo">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Demo Materials</span>
+                </a>
+                <a href="#analytics" class="sidebar-link" data-section="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#settings" class="sidebar-link" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="dashboard-header">
+                    <h1 class="dashboard-title">Welcome back, Prof. Sharma</h1>
+                    <p class="dashboard-subtitle">Manage your JEE Main materials and track student progress</p>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">248</div>
+                        <div class="stat-label">Total Materials Uploaded</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">1,543</div>
+                        <div class="stat-label">Student Downloads</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4.8</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Active Students</div>
+                    </div>
+                </div>
+
+                <div class="subjects-grid">
+                    <div class="subject-card physics" onclick="showSubjectMaterials('physics')">
+                        <div class="subject-icon">
+                            <i class="fas fa-atom"></i>
+                        </div>
+                        <h3 class="subject-name">Physics</h3>
+                        <div class="subject-stats">89 materials • 25% weightage</div>
+                    </div>
+                    <div class="subject-card chemistry" onclick="showSubjectMaterials('chemistry')">
+                        <div class="subject-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3 class="subject-name">Chemistry</h3>
+                        <div class="subject-stats">76 materials • 30% weightage</div>
+                    </div>
+                    <div class="subject-card mathematics" onclick="showSubjectMaterials('mathematics')">
+                        <div class="subject-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3 class="subject-name">Mathematics</h3>
+                        <div class="subject-stats">83 materials • 35% weightage</div>
+                    </div>
+                </div>
+
+                <!-- Featured Materials -->
+                <div class="demo-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Featured Material Packages</h2>
+                    </div>
+                    <div class="featured-grid">
+                        <div class="featured-card">
+                            <h3 class="featured-title">Complete JEE Main Study Package 2025</h3>
+                            <p class="featured-description">All subjects comprehensive study material</p>
+                            <div class="featured-stats">
+                                <span>45 materials</span>
+                                <span>1.2 GB</span>
+                                <span>12,543 downloads</span>
+                            </div>
+                        </div>
+                        <div class="featured-card">
+                            <h3 class="featured-title">Previous Year Papers Collection</h3>
+                            <p class="featured-description">10 years of JEE Main papers with solutions</p>
+                            <div class="featured-stats">
+                                <span>30 materials</span>
+                                <span>450 MB</span>
+                                <span>8,976 downloads</span>
+                            </div>
+                        </div>
+                        <div class="featured-card">
+                            <h3 class="featured-title">Mock Test Series - All Subjects</h3>
+                            <p class="featured-description">100+ mock tests with detailed analysis</p>
+                            <div class="featured-stats">
+                                <span>100 materials</span>
+                                <span>280 MB</span>
+                                <span>6,754 downloads</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Upload Section -->
+            <section id="upload" class="section">
+                <div class="upload-container">
+                    <div class="upload-header">
+                        <h2 class="upload-title">Upload New Material</h2>
+                        <p>Add study materials for your students to access</p>
+                    </div>
+
+                    <form id="upload-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Subject</label>
+                                <select class="form-select" id="subject-select" required>
+                                    <option value="">Select Subject</option>
+                                    <option value="physics">Physics</option>
+                                    <option value="chemistry">Chemistry</option>
+                                    <option value="mathematics">Mathematics</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Class</label>
+                                <select class="form-select" id="class-select" required>
+                                    <option value="">Select Class</option>
+                                    <option value="class11">Class 11</option>
+                                    <option value="class12">Class 12</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">Chapter</label>
+                                <select class="form-select" id="chapter-select" required>
+                                    <option value="">Select Chapter</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Material Type</label>
+                                <select class="form-select" id="material-type-select" required>
+                                    <option value="">Select Type</option>
+                                    <option value="Study Notes">Study Notes</option>
+                                    <option value="Practice Papers">Practice Papers</option>
+                                    <option value="Video Lectures">Video Lectures</option>
+                                    <option value="Reference Books">Reference Books</option>
+                                    <option value="Mock Tests">Mock Tests</option>
+                                    <option value="Previous Year Papers">Previous Year Papers</option>
+                                    <option value="Formula Sheets">Formula Sheets</option>
+                                    <option value="Solved Examples">Solved Examples</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Material Title</label>
+                            <input type="text" class="form-input" id="material-title" placeholder="Enter material title" required>
+                        </div>
+
+                        <div class="file-upload-area" id="file-upload-area">
+                            <div class="file-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="file-upload-text">Drag and drop files here</div>
+                            <div class="file-upload-hint">or click to select files • PDF, DOC, PPT, MP4 supported</div>
+                            <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4" hidden>
+                        </div>
+
+                        <div id="upload-progress" style="display: none;">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <p id="progress-text">Uploading...</p>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <button type="submit" class="btn btn--primary">
+                                <i class="fas fa-upload"></i>
+                                Upload Material
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Demo Materials Section -->
+            <section id="demo" class="section">
+                <div class="demo-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Demo Materials Library</h2>
+                        <p>Explore our comprehensive collection of JEE Main preparation materials</p>
+                    </div>
+
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" id="demo-search" placeholder="Search demo materials...">
+                    </div>
+
+                    <div class="demo-filters">
+                        <div class="filter-group">
+                            <label class="filter-label">Subject</label>
+                            <select class="form-select" id="demo-subject-filter">
+                                <option value="all">All Subjects</option>
+                                <option value="physics">Physics</option>
+                                <option value="chemistry">Chemistry</option>
+                                <option value="mathematics">Mathematics</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Difficulty</label>
+                            <select class="form-select" id="demo-difficulty-filter">
+                                <option value="all">All Levels</option>
+                                <option value="Beginner">Beginner</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Material Type</label>
+                            <select class="form-select" id="demo-type-filter">
+                                <option value="all">All Types</option>
+                                <option value="Reference Books">Reference Books</option>
+                                <option value="Practice Papers">Practice Papers</option>
+                                <option value="Previous Year Papers">Previous Year Papers</option>
+                                <option value="Formula Sheets">Formula Sheets</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label class="filter-label">Rating</label>
+                            <select class="form-select" id="demo-rating-filter">
+                                <option value="all">All Ratings</option>
+                                <option value="4.5">4.5+ Stars</option>
+                                <option value="4.0">4.0+ Stars</option>
+                                <option value="3.5">3.5+ Stars</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="demo-grid" id="demo-materials-grid">
+                        <!-- Demo materials will be loaded here by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Manage Materials Section -->
+            <section id="manage" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Manage Materials</h2>
+                    <button class="btn btn--primary" onclick="refreshMaterials()">
+                        <i class="fas fa-sync-alt"></i>
+                        Refresh
+                    </button>
+                </div>
+
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="manage-search" placeholder="Search your materials...">
+                </div>
+
+                <div class="demo-grid" id="manage-materials-grid">
+                    <!-- Uploaded materials will be shown here -->
+                </div>
+            </section>
+
+            <!-- Analytics Section -->
+            <section id="analytics" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Analytics & Reports</h2>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">15,672</div>
+                        <div class="stat-label">Total Views</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8,945</div>
+                        <div class="stat-label">Total Downloads</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">4.7</div>
+                        <div class="stat-label">Average Rating</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">89%</div>
+                        <div class="stat-label">Student Satisfaction</div>
+                    </div>
+                </div>
+
+                <div class="upload-container">
+                    <h3>Subject-wise Performance</h3>
+                    <div class="subjects-grid">
+                        <div class="subject-card physics">
+                            <div class="subject-icon">
+                                <i class="fas fa-atom"></i>
+                            </div>
+                            <h3 class="subject-name">Physics</h3>
+                            <div class="subject-stats">3,245 downloads • 4.8 rating</div>
+                        </div>
+                        <div class="subject-card chemistry">
+                            <div class="subject-icon">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <h3 class="subject-name">Chemistry</h3>
+                            <div class="subject-stats">2,876 downloads • 4.6 rating</div>
+                        </div>
+                        <div class="subject-card mathematics">
+                            <div class="subject-icon">
+                                <i class="fas fa-calculator"></i>
+                            </div>
+                            <h3 class="subject-name">Mathematics</h3>
+                            <div class="subject-stats">2,824 downloads • 4.7 rating</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Settings</h2>
+                </div>
+
+                <div class="upload-container">
+                    <h3>Account Settings</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">Display Name</label>
+                            <input type="text" class="form-input" value="Prof. Sharma" id="display-name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" value="prof.sharma@shreeojasvidhyalaya.com" id="email">
+                        </div>
+                    </div>
+                    <button class="btn btn--primary">Save Changes</button>
+                </div>
+
+                <div class="upload-container" style="margin-top: 2rem;">
+                    <h3>Notification Preferences</h3>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" checked> Email notifications for new uploads
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" checked> Student feedback notifications
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox"> Weekly analytics reports
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Material Preview Modal -->
+    <div id="preview-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="preview-title">Material Preview</h3>
+                <button class="close-modal" onclick="closePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div id="preview-content">
+                <!-- Preview content will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Download Progress Modal -->
+    <div id="download-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Downloading Material</h3>
+            </div>
+            <div id="download-content">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="download-progress-fill"></div>
+                </div>
+                <p id="download-progress-text">Preparing download...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <div id="notification-content"></div>
+    </div>
+
+    <script>
+        // Application Data
+        const appData = {
+            subjects: {
+                physics: {
+                    name: "Physics",
+                    color: "#ef4444",
+                    chapters: {
+                        class11: [
+                            "Physical World & Units", "Kinematics", "Laws of Motion", 
+                            "Work, Energy & Power", "Rotational Motion", "Gravitation",
+                            "Properties of Bulk Matter", "Thermodynamics", "Kinetic Theory",
+                            "Oscillations & Waves"
+                        ],
+                        class12: [
+                            "Electric Charges & Fields", "Electrostatic Potential", "Current Electricity",
+                            "Moving Charges & Magnetism", "Magnetism & Matter", "Electromagnetic Induction",
+                            "Alternating Current", "Electromagnetic Waves", "Ray Optics", "Wave Optics",
+                            "Dual Nature of Radiation", "Atoms", "Nuclei", "Semiconductor Electronics"
+                        ]
+                    }
+                },
+                chemistry: {
+                    name: "Chemistry", 
+                    color: "#10b981",
+                    chapters: {
+                        class11: [
+                            "Some Basic Concepts", "Structure of Atom", "Classification of Elements",
+                            "Chemical Bonding", "States of Matter", "Thermodynamics", "Equilibrium",
+                            "Redox Reactions", "Hydrogen", "s-Block Elements", "p-Block Elements",
+                            "Organic Chemistry Basics", "Hydrocarbons", "Environmental Chemistry"
+                        ],
+                        class12: [
+                            "Solid State", "Solutions", "Electrochemistry", "Chemical Kinetics",
+                            "Surface Chemistry", "General Principles of Metallurgy", "p-Block Elements",
+                            "d-Block & f-Block Elements", "Coordination Compounds", "Haloalkanes & Haloarenes",
+                            "Alcohols, Phenols & Ethers", "Aldehydes, Ketones & Carboxylic Acids",
+                            "Organic Compounds with Nitrogen", "Biomolecules", "Polymers", "Chemistry in Everyday Life"
+                        ]
+                    }
+                },
+                mathematics: {
+                    name: "Mathematics",
+                    color: "#8b5cf6", 
+                    chapters: {
+                        class11: [
+                            "Sets", "Relations & Functions", "Trigonometric Functions", "Mathematical Induction",
+                            "Complex Numbers", "Linear Inequalities", "Permutations & Combinations",
+                            "Binomial Theorem", "Sequences & Series", "Straight Lines", "Conic Sections",
+                            "Introduction to 3D Geometry", "Limits & Derivatives", "Mathematical Reasoning",
+                            "Statistics", "Probability"
+                        ],
+                        class12: [
+                            "Relations & Functions", "Inverse Trigonometric Functions", "Matrices",
+                            "Determinants", "Continuity & Differentiability", "Applications of Derivatives",
+                            "Integrals", "Applications of Integrals", "Differential Equations",
+                            "Vector Algebra", "Three Dimensional Geometry", "Linear Programming", "Probability"
+                        ]
+                    }
+                }
+            },
+            demoMaterials: {
+                physics: [
+                    {
+                        title: "Cengage Physics - Mechanics Complete Guide",
+                        author: "BM Sharma",
+                        subject: "Physics",
+                        chapters: ["Laws of Motion", "Kinematics", "Work, Energy & Power"],
+                        type: "Reference Books",
+                        difficulty: "Advanced",
+                        size: "45.2 MB",
+                        pages: 320,
+                        downloads: 2547,
+                        rating: 4.9,
+                        reviews: 186,
+                        description: "Comprehensive mechanics guide covering all JEE Main topics with detailed theory and practice problems."
+                    },
+                    {
+                        title: "HC Verma - Concepts of Physics Volume 1",
+                        author: "HC Verma",
+                        subject: "Physics", 
+                        chapters: ["Mechanics", "Waves", "Thermodynamics"],
+                        type: "Reference Books",
+                        difficulty: "Intermediate",
+                        size: "38.7 MB",
+                        pages: 452,
+                        downloads: 3421,
+                        rating: 4.8,
+                        reviews: 298,
+                        description: "Classic physics textbook with conceptual clarity and excellent problem sets."
+                    },
+                    {
+                        title: "DC Pandey Physics - Mechanics",
+                        author: "DC Pandey",
+                        subject: "Physics",
+                        chapters: ["Kinematics", "Laws of Motion", "Rotational Motion"],
+                        type: "Practice Papers",
+                        difficulty: "Advanced", 
+                        size: "28.3 MB",
+                        pages: 245,
+                        downloads: 1876,
+                        rating: 4.7,
+                        reviews: 152,
+                        description: "Challenging problem sets for JEE Main and Advanced preparation."
+                    },
+                    {
+                        title: "JEE Main Physics Previous Year Papers (2020-2024)",
+                        author: "NTA Official",
+                        subject: "Physics",
+                        chapters: ["All Chapters"],
+                        type: "Previous Year Papers",
+                        difficulty: "Advanced",
+                        size: "15.8 MB", 
+                        pages: 180,
+                        downloads: 5632,
+                        rating: 4.9,
+                        reviews: 421,
+                        description: "Complete collection of official JEE Main physics papers with detailed solutions."
+                    },
+                    {
+                        title: "Physics Formula Sheets - All Chapters",
+                        author: "SHREEJEE PUBLICATION Team",
+                        subject: "Physics",
+                        chapters: ["All Chapters"],
+                        type: "Formula Sheets",
+                        difficulty: "Beginner",
+                        size: "5.2 MB",
+                        pages: 42,
+                        downloads: 4523,
+                        rating: 4.6,
+                        reviews: 256,
+                        description: "Comprehensive formula compilation for quick revision and exam preparation."
+                    }
+                ],
+                chemistry: [
+                    {
+                        title: "Cengage Chemistry - Organic Chemistry Complete",
+                        author: "KS Verma",
+                        subject: "Chemistry",
+                        chapters: ["Hydrocarbons", "Haloalkanes", "Alcohols & Ethers"],
+                        type: "Reference Books",
+                        difficulty: "Advanced",
+                        size: "52.1 MB",
+                        pages: 428,
+                        downloads: 2341,
+                        rating: 4.8,
+                        reviews: 194,
+                        description: "Comprehensive organic chemistry guide with mechanism-based approach."
+                    },
+                    {
+                        title: "NCERT Chemistry Class 12 - Complete",
+                        author: "NCERT",
+                        subject: "Chemistry",
+                        chapters: ["Solid State", "Solutions", "Electrochemistry"],
+                        type: "Reference Books", 
+                        difficulty: "Beginner",
+                        size: "41.6 MB",
+                        pages: 315,
+                        downloads: 6785,
+                        rating: 4.5,
+                        reviews: 432,
+                        description: "Official NCERT textbook - foundation for JEE Main chemistry preparation."
+                    },
+                    {
+                        title: "MS Chauhan - Advanced Organic Chemistry",
+                        author: "MS Chauhan",
+                        subject: "Chemistry",
+                        chapters: ["Organic Compounds with Nitrogen", "Biomolecules"],
+                        type: "Practice Papers",
+                        difficulty: "Advanced",
+                        size: "34.7 MB",
+                        pages: 298,
+                        downloads: 1654,
+                        rating: 4.7,
+                        reviews: 123,
+                        description: "Advanced problem sets for organic chemistry mastery."
+                    },
+                    {
+                        title: "JEE Main Chemistry Previous Years (2020-2024)",
+                        author: "NTA Official", 
+                        subject: "Chemistry",
+                        chapters: ["All Chapters"],
+                        type: "Previous Year Papers",
+                        difficulty: "Advanced",
+                        size: "18.4 MB",
+                        pages: 225,
+                        downloads: 4987,
+                        rating: 4.9,
+                        reviews: 367,
+                        description: "Official JEE Main chemistry papers with comprehensive analysis."
+                    },
+                    {
+                        title: "Chemistry Reaction Mechanisms Guide",
+                        author: "SHREEJEE PUBLICATION Team",
+                        subject: "Chemistry",
+                        chapters: ["Organic Chemistry"],
+                        type: "Formula Sheets",
+                        difficulty: "Intermediate",
+                        size: "12.3 MB",
+                        pages: 85,
+                        downloads: 3876,
+                        rating: 4.6,
+                        reviews: 201,
+                        description: "Complete organic reaction mechanisms with step-by-step explanations."
+                    }
+                ],
+                mathematics: [
+                    {
+                        title: "Cengage Mathematics - Calculus & Coordinate Geometry",
+                        author: "G Tewani",
+                        subject: "Mathematics",
+                        chapters: ["Integrals", "Applications of Derivatives", "Conic Sections"],
+                        type: "Reference Books",
+                        difficulty: "Advanced", 
+                        size: "48.9 MB",
+                        pages: 387,
+                        downloads: 2856,
+                        rating: 4.9,
+                        reviews: 223,
+                        description: "Advanced calculus and coordinate geometry with extensive problem practice."
+                    },
+                    {
+                        title: "RD Sharma - JEE Main Mathematics",
+                        author: "RD Sharma",
+                        subject: "Mathematics",
+                        chapters: ["Complex Numbers", "Quadratic Equations", "Sequences & Series"],
+                        type: "Reference Books",
+                        difficulty: "Intermediate",
+                        size: "43.2 MB", 
+                        pages: 456,
+                        downloads: 4521,
+                        rating: 4.7,
+                        reviews: 345,
+                        description: "Comprehensive mathematics reference with graded problem sets."
+                    },
+                    {
+                        title: "ML Khanna - Higher Algebra",
+                        author: "ML Khanna",
+                        subject: "Mathematics",
+                        chapters: ["Permutations & Combinations", "Probability", "Mathematical Induction"],
+                        type: "Practice Papers",
+                        difficulty: "Advanced",
+                        size: "29.8 MB",
+                        pages: 267,
+                        downloads: 1987,
+                        rating: 4.8,
+                        reviews: 156,
+                        description: "Advanced algebra problems for JEE Main and competitive exams."
+                    },
+                    {
+                        title: "JEE Main Mathematics Previous Years (2020-2024)",
+                        author: "NTA Official",
+                        subject: "Mathematics", 
+                        chapters: ["All Chapters"],
+                        type: "Previous Year Papers",
+                        difficulty: "Advanced",
+                        size: "16.7 MB",
+                        pages: 195,
+                        downloads: 5234,
+                        rating: 4.9,
+                        reviews: 398,
+                        description: "Complete collection of JEE Main mathematics papers with solutions."
+                    },
+                    {
+                        title: "Mathematics Formula Reference Guide",
+                        author: "SHREEJEE PUBLICATION Team",
+                        subject: "Mathematics",
+                        chapters: ["All Chapters"],
+                        type: "Formula Sheets",
+                        difficulty: "Beginner",
+                        size: "8.1 MB",
+                        pages: 65,
+                        downloads: 6543,
+                        rating: 4.5,
+                        reviews: 387,
+                        description: "Complete mathematics formula compilation for JEE Main preparation."
+                    }
+                ]
+            }
+        };
+
+        // Global variables
+        let uploadedMaterials = [];
+        let currentSection = 'dashboard';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+            loadDemoMaterials();
+            setupEventListeners();
+        });
+
+        function initializeApp() {
+            // Set up sidebar navigation
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                });
+            });
+
+            // Set up form handlers
+            setupUploadForm();
+            setupSearchAndFilters();
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            document.getElementById(sectionName).classList.add('active');
+
+            // Update sidebar
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('active');
+
+            currentSection = sectionName;
+
+            // Load section-specific data
+            if (sectionName === 'manage') {
+                loadUploadedMaterials();
+            }
+        }
+
+        function setupUploadForm() {
+            const subjectSelect = document.getElementById('subject-select');
+            const classSelect = document.getElementById('class-select');
+            const chapterSelect = document.getElementById('chapter-select');
+            const uploadForm = document.getElementById('upload-form');
+            const fileUploadArea = document.getElementById('file-upload-area');
+            const fileInput = document.getElementById('file-input');
+
+            // Subject change handler
+            subjectSelect.addEventListener('change', function() {
+                updateChapters();
+            });
+
+            classSelect.addEventListener('change', function() {
+                updateChapters();
+            });
+
+            function updateChapters() {
+                const subject = subjectSelect.value;
+                const selectedClass = classSelect.value;
+                
+                chapterSelect.innerHTML = '<option value="">Select Chapter</option>';
+                
+                if (subject && selectedClass && appData.subjects[subject]) {
+                    const chapters = appData.subjects[subject].chapters[selectedClass];
+                    if (chapters) {
+                        chapters.forEach(chapter => {
+                            const option = document.createElement('option');
+                            option.value = chapter;
+                            option.textContent = chapter;
+                            chapterSelect.appendChild(option);
+                        });
+                    }
+                }
+            }
+
+            // File upload handlers
+            fileUploadArea.addEventListener('click', () => fileInput.click());
+            fileUploadArea.addEventListener('dragover', handleDragOver);
+            fileUploadArea.addEventListener('drop', handleFileDrop);
+            fileInput.addEventListener('change', handleFileSelect);
+
+            // Form submission
+            uploadForm.addEventListener('submit', handleFormSubmit);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            document.getElementById('file-upload-area').classList.add('dragover');
+        }
+
+        function handleFileDrop(e) {
+            e.preventDefault();
+            document.getElementById('file-upload-area').classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            handleFiles(files);
+        }
+
+        function handleFileSelect(e) {
+            const files = e.target.files;
+            handleFiles(files);
+        }
+
+        function handleFiles(files) {
+            const fileUploadArea = document.getElementById('file-upload-area');
+            const fileList = Array.from(files);
+            
+            if (fileList.length > 0) {
+                fileUploadArea.innerHTML = `
+                    <div class="file-upload-icon">
+                        <i class="fas fa-file"></i>
+                    </div>
+                    <div class="file-upload-text">${fileList.length} file(s) selected</div>
+                    <div class="file-upload-hint">${fileList.map(f => f.name).join(', ')}</div>
+                `;
+            }
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const formData = {
+                subject: document.getElementById('subject-select').value,
+                class: document.getElementById('class-select').value,
+                chapter: document.getElementById('chapter-select').value,
+                type: document.getElementById('material-type-select').value,
+                title: document.getElementById('material-title').value,
+                files: document.getElementById('file-input').files
+            };
+
+            if (!formData.subject || !formData.class || !formData.chapter || !formData.type || !formData.title || formData.files.length === 0) {
+                showNotification('Please fill in all fields and select files', 'error');
+                return;
+            }
+
+            simulateUpload(formData);
+        }
+
+        function simulateUpload(formData) {
+            const progressContainer = document.getElementById('upload-progress');
+            const progressFill = document.getElementById('progress-fill');
+            const progressText = document.getElementById('progress-text');
+
+            progressContainer.style.display = 'block';
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress > 100) progress = 100;
+
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `Uploading... ${Math.round(progress)}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        // Add to uploaded materials
+                        const newMaterial = {
+                            id: Date.now(),
+                            title: formData.title,
+                            subject: formData.subject,
+                            chapter: formData.chapter,
+                            type: formData.type,
+                            uploadDate: new Date().toISOString().split('T')[0],
+                            status: 'Published',
+                            size: Math.round(Math.random() * 50 + 5) + ' MB',
+                            downloads: 0,
+                            rating: 0,
+                            reviews: 0
+                        };
+
+                        uploadedMaterials.push(newMaterial);
+                        
+                        // Reset form
+                        document.getElementById('upload-form').reset();
+                        progressContainer.style.display = 'none';
+                        document.getElementById('file-upload-area').innerHTML = `
+                            <div class="file-upload-icon">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                            </div>
+                            <div class="file-upload-text">Drag and drop files here</div>
+                            <div class="file-upload-hint">or click to select files • PDF, DOC, PPT, MP4 supported</div>
+                        `;
+
+                        showNotification('Material uploaded successfully!', 'success');
+                    }, 500);
+                }
+            }, 200);
+        }
+
+        function loadDemoMaterials() {
+            const grid = document.getElementById('demo-materials-grid');
+            const allMaterials = [];
+            
+            Object.keys(appData.demoMaterials).forEach(subject => {
+                allMaterials.push(...appData.demoMaterials[subject]);
+            });
+
+            renderMaterials(allMaterials, grid, true);
+        }
+
+        function loadUploadedMaterials() {
+            const grid = document.getElementById('manage-materials-grid');
+            renderMaterials(uploadedMaterials, grid, false);
+        }
+
+        function renderMaterials(materials, container, isDemo = false) {
+            if (materials.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--text-secondary);">
+                        <i class="fas fa-folder-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                        <p>No materials found</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = materials.map(material => `
+                <div class="material-card">
+                    <div class="material-header">
+                        <div>
+                            <h3 class="material-title">${material.title}</h3>
+                            <p class="material-author">by ${material.author || 'Unknown'}</p>
+                        </div>
+                        <span class="difficulty-badge difficulty-${material.difficulty?.toLowerCase() || 'beginner'}">
+                            ${material.difficulty || 'Beginner'}
+                        </span>
+                    </div>
+
+                    <div class="material-details">
+                        <span><i class="fas fa-book"></i> ${material.type}</span>
+                        <span><i class="fas fa-file-alt"></i> ${material.pages || 0} pages</span>
+                        <span><i class="fas fa-download"></i> ${material.size}</span>
+                        <span><i class="fas fa-flask" style="color: var(--${material.subject.toLowerCase()}-color)"></i> ${material.subject}</span>
+                    </div>
+
+                    <div class="material-stats">
+                        <div class="rating">
+                            <span class="stars">★★★★★</span>
+                            <span>${material.rating || 0}</span>
+                            <span>(${material.reviews || 0} reviews)</span>
+                        </div>
+                        <span>${material.downloads || 0} downloads</span>
+                    </div>
+
+                    <p class="material-description">${material.description || 'No description available.'}</p>
+
+                    <div class="material-actions">
+                        ${isDemo ? `
+                            <button class="btn btn--primary btn--sm" onclick="downloadMaterial('${material.title}', '${material.size}')">
+                                <i class="fas fa-download"></i>
+                                Download
+                            </button>
+                            <button class="btn btn--secondary btn--sm" onclick="previewMaterial('${material.title}')">
+                                <i class="fas fa-eye"></i>
+                                Preview
+                            </button>
+                        ` : `
+                            <button class="btn btn--secondary btn--sm" onclick="editMaterial(${material.id})">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn--secondary btn--sm" onclick="deleteMaterial(${material.id})">
+                                <i class="fas fa-trash"></i>
+                                Delete
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function setupSearchAndFilters() {
+            // Demo materials search and filters
+            const demoSearch = document.getElementById('demo-search');
+            const demoSubjectFilter = document.getElementById('demo-subject-filter');
+            const demoDifficultyFilter = document.getElementById('demo-difficulty-filter');
+            const demoTypeFilter = document.getElementById('demo-type-filter');
+            const demoRatingFilter = document.getElementById('demo-rating-filter');
+
+            function filterDemoMaterials() {
+                const searchTerm = demoSearch.value.toLowerCase();
+                const subjectFilter = demoSubjectFilter.value;
+                const difficultyFilter = demoDifficultyFilter.value;
+                const typeFilter = demoTypeFilter.value;
+                const ratingFilter = parseFloat(demoRatingFilter.value);
+
+                const allMaterials = [];
+                Object.keys(appData.demoMaterials).forEach(subject => {
+                    allMaterials.push(...appData.demoMaterials[subject]);
+                });
+
+                const filtered = allMaterials.filter(material => {
+                    const matchesSearch = material.title.toLowerCase().includes(searchTerm) ||
+                                        material.author.toLowerCase().includes(searchTerm) ||
+                                        material.description.toLowerCase().includes(searchTerm);
+                    
+                    const matchesSubject = subjectFilter === 'all' || material.subject.toLowerCase() === subjectFilter;
+                    const matchesDifficulty = difficultyFilter === 'all' || material.difficulty === difficultyFilter;
+                    const matchesType = typeFilter === 'all' || material.type === typeFilter;
+                    const matchesRating = isNaN(ratingFilter) || material.rating >= ratingFilter;
+
+                    return matchesSearch && matchesSubject && matchesDifficulty && matchesType && matchesRating;
+                });
+
+                renderMaterials(filtered, document.getElementById('demo-materials-grid'), true);
+            }
+
+            demoSearch.addEventListener('input', filterDemoMaterials);
+            demoSubjectFilter.addEventListener('change', filterDemoMaterials);
+            demoDifficultyFilter.addEventListener('change', filterDemoMaterials);
+            demoTypeFilter.addEventListener('change', filterDemoMaterials);
+            demoRatingFilter.addEventListener('change', filterDemoMaterials);
+
+            // Manage materials search
+            const manageSearch = document.getElementById('manage-search');
+            manageSearch.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const filtered = uploadedMaterials.filter(material => 
+                    material.title.toLowerCase().includes(searchTerm) ||
+                    material.subject.toLowerCase().includes(searchTerm) ||
+                    material.chapter.toLowerCase().includes(searchTerm)
+                );
+                renderMaterials(filtered, document.getElementById('manage-materials-grid'), false);
+            });
+        }
+
+        function setupEventListeners() {
+            // Logout button
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    showNotification('Logged out successfully', 'success');
+                }
+            });
+
+            // Close modal when clicking outside
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.classList.remove('active');
+                }
+            });
+        }
+
+        // Demo material functions
+        function downloadMaterial(title, size) {
+            const modal = document.getElementById('download-modal');
+            const progressFill = document.getElementById('download-progress-fill');
+            const progressText = document.getElementById('download-progress-text');
+            
+            modal.classList.add('active');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10 + 5;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + '%';
+                progressText.textContent = `Downloading ${title}... ${Math.round(progress)}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        modal.classList.remove('active');
+                        showNotification(`${title} downloaded successfully!`, 'success');
+                        
+                        // Update download count (simulation)
+                        const allMaterials = [];
+                        Object.keys(appData.demoMaterials).forEach(subject => {
+                            appData.demoMaterials[subject].forEach(material => {
+                                if (material.title === title) {
+                                    material.downloads++;
+                                }
+                            });
+                        });
+                        
+                        loadDemoMaterials();
+                    }, 1000);
+                }
+            }, 300);
+        }
+
+        function previewMaterial(title) {
+            const modal = document.getElementById('preview-modal');
+            const modalTitle = document.getElementById('preview-title');
+            const previewContent = document.getElementById('preview-content');
+            
+            modalTitle.textContent = `Preview: ${title}`;
+            previewContent.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                    <i class="fas fa-file-pdf" style="font-size: 4rem; margin-bottom: 1rem; color: var(--primary-blue);"></i>
+                    <h3>Material Preview</h3>
+                    <p>This is a preview of ${title}.</p>
+                    <p>The full material contains detailed explanations, solved examples, and practice problems.</p>
+                    <div style="margin-top: 2rem;">
+                        <button class="btn btn--primary" onclick="downloadMaterial('${title}', '45.2 MB')">
+                            <i class="fas fa-download"></i>
+                            Download Full Material
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closePreviewModal() {
+            document.getElementById('preview-modal').classList.remove('active');
+        }
+
+        // Material management functions
+        function editMaterial(id) {
+            const material = uploadedMaterials.find(m => m.id === id);
+            if (material) {
+                showNotification(`Editing ${material.title}`, 'warning');
+                // Here you would typically open an edit form
+            }
+        }
+
+        function deleteMaterial(id) {
+            if (confirm('Are you sure you want to delete this material?')) {
+                uploadedMaterials = uploadedMaterials.filter(m => m.id !== id);
+                loadUploadedMaterials();
+                showNotification('Material deleted successfully', 'success');
+            }
+        }
+
+        function refreshMaterials() {
+            loadUploadedMaterials();
+            showNotification('Materials refreshed', 'success');
+        }
+
+        // Subject navigation
+        function showSubjectMaterials(subject) {
+            const materials = appData.demoMaterials[subject] || [];
+            document.getElementById('demo-subject-filter').value = subject;
+            renderMaterials(materials, document.getElementById('demo-materials-grid'), true);
+            showSection('demo');
+        }
+
+        // Notification system
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const content = document.getElementById('notification-content');
+            
+            content.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Utility functions
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric' 
+            });
+        }
+    </script>
+</body>
+</html>
