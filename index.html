@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Shreejee Publications</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Minimal inline styles so page displays even if external CSS missing */
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;margin:0;background:#f7f7f7;color:#222}
+    .container{max-width:900px;margin:4rem auto;padding:2rem;background:#fff;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.05)}
+    header h1{margin:0 0 .5rem;font-size:1.75rem}
+    p.lead{margin:0 0 1rem;color:#555}
+    footer{margin-top:2rem;font-size:.9rem;color:#666;text-align:center}
+    pre{white-space:pre-wrap;word-break:break-word}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Shreejee Publications</h1>
+      <p class="lead">Welcome — this repository contains HTML and CSS files. This index.html lets the browser load the project.</p>
+    </header>
+
+    <section>
+      <h2>How to view</h2>
+      <ol>
+        <li>Open this file (index.html) in your browser — double-click or serve via a web server.</li>
+        <li>If there's a styles.css or other CSS files in the repo, they will be automatically applied if their path matches.</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>Quick preview</h2>
+      <pre id="files">Loading file list...</pre>
+    </section>
+
+    <script>
+      // Try to detect common CSS files (best-effort). Note: fetch HEAD fails on file:// protocol.
+      const files = ['styles.css','style.css','main.css','assets/styles.css','css/styles.css'];
+      (async function(){
+        const available = [];
+        for(const f of files){
+          try{
+            const r = await fetch(f,{method:'HEAD'});
+            if(r.ok) available.push(f);
+          }catch(e){}
+        }
+        const el = document.getElementById('files');
+        if(available.length) el.textContent = 'Found CSS files: ' + available.join(', ');
+        else el.textContent = 'No common CSS files found automatically. If your CSS is in a different path, open and inspect the repository.';
+      })();
+    </script>
+
+    <footer>
+      <p>Generated 2025-12-14 for repository: 25csdaksh/shreejee-publications</p>
+    </footer>
+  </div>
+</body>
+</html>
